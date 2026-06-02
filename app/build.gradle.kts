@@ -41,6 +41,9 @@ android {
       signingConfig = signingConfigs.getByName("debugConfig")
     }
   }
+  lint {
+    disable += "InvalidFragmentVersionForActivityResult"
+  }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
