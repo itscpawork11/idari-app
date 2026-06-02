@@ -2,7 +2,6 @@ package com.example.ui.screens
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,7 +48,6 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.random.Random
 
 @Composable
 fun DashboardScreen(
@@ -115,7 +113,6 @@ fun DashboardScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedGeometricBackground()
 
         LazyColumn(
             modifier = modifier.fillMaxSize().testTag("dashboard_screen").padding(horizontal = 16.dp),
@@ -564,99 +561,4 @@ private fun calculateLast7DaysSpending(transactions: List<TransactionWithCategor
     return list
 }
 
-@Composable
-fun AnimatedGeometricBackground() {
-    val infiniteTransition = rememberInfiniteTransition(label = "geo")
-    val shapeCount = 6
-    val primary = MaterialTheme.colorScheme.primary
-    val secondary = MaterialTheme.colorScheme.secondary
-    val tertiary = MaterialTheme.colorScheme.tertiary
 
-    val shapeData = remember {
-        List(shapeCount) { i ->
-            GeometricShape(
-                centerX = Random.nextFloat(),
-                centerY = Random.nextFloat(),
-                size = Random.nextFloat() * 60f + 20f,
-                speed = Random.nextFloat() * 0.5f + 0.3f,
-                rotation = Random.nextFloat() * 360f,
-                alpha = Random.nextFloat() * 0.08f + 0.03f,
-                type = i % 3,
-                colorSeed = i
-            )
-        }
-    }
-
-    val animProgress = infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(8000, easing = LinearEasing), RepeatMode.Restart),
-        label = "progress"
-    )
-
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        val w = size.width
-        val h = size.height
-
-        shapeData.forEach { shape ->
-            val phase = animProgress.value * shape.speed
-            val x = ((shape.centerX + phase * 0.3f) % 1.2f - 0.1f) * w
-            val y = ((shape.centerY + phase * 0.2f + sin(phase * 2f) * 0.05f) % 1.2f - 0.1f) * h
-            val rot = shape.rotation + phase * 30f
-            val s = shape.size * density
-
-            val color = when (shape.colorSeed % 3) {
-                0 -> primary.copy(alpha = shape.alpha)
-                1 -> secondary.copy(alpha = shape.alpha)
-                else -> tertiary.copy(alpha = shape.alpha)
-            }
-
-            translate(x, y) {
-                rotate(rot, Offset(s / 2f, s / 2f)) {
-                    when (shape.type) {
-                        0 -> {
-                            drawCircle(color = color, radius = s / 2f)
-                        }
-                        1 -> {
-                            val path = Path().apply {
-                                moveTo(s / 2f, 0f)
-                                lineTo(s, s * 0.67f)
-                                lineTo(s * 0.67f, s)
-                                lineTo(s * 0.33f, s)
-                                lineTo(0f, s * 0.67f)
-                                close()
-                            }
-                            drawPath(path, color = color)
-                        }
-                        else -> {
-                            val path = Path().apply {
-                                val cx = s / 2f
-                                val cy = s / 2f
-                                val r = s / 2f
-                                for (i in 0 until 6) {
-                                    val angle = Math.toRadians((i * 60f).toDouble())
-                                    val px = cx + r * cos(angle).toFloat()
-                                    val py = cy + r * sin(angle).toFloat()
-                                    if (i == 0) moveTo(px, py) else lineTo(px, py)
-                                }
-                                close()
-                            }
-                            drawPath(path, color = color)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-private data class GeometricShape(
-    val centerX: Float,
-    val centerY: Float,
-    val size: Float,
-    val speed: Float,
-    val rotation: Float,
-    val alpha: Float,
-    val type: Int,
-    val colorSeed: Int
-)
