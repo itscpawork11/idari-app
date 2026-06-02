@@ -88,6 +88,7 @@ fun DashboardScreen(
                 spending.add(ExpenseViewModel.CategorySpending(otherName, otherAmount, "#9E9E9E", (otherAmount / total * 100).toFloat()))
             }
         }
+        spending
     }
 
     var showDeleteDialog by remember { mutableStateOf<Long?>(null) }

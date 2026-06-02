@@ -236,9 +236,8 @@ class MainActivity : FragmentActivity() {
                                             targetState = currentTab,
                                             transitionSpec = {
                                                 val direction = if (targetState > initialState) 1 else -1
-                                                val offset = 30.dp * direction
-                                                slideInHorizontally(animationSpec = tween(350)) { offset } + fadeIn(animationSpec = tween(350)) togetherWith
-                                                slideOutHorizontally(animationSpec = tween(250)) { -offset } + fadeOut(animationSpec = tween(250))
+                                                slideInHorizontally(animationSpec = tween(350)) { fullWidth -> fullWidth * direction } + fadeIn(animationSpec = tween(350)) togetherWith
+                                                slideOutHorizontally(animationSpec = tween(250)) { fullWidth -> -fullWidth * direction } + fadeOut(animationSpec = tween(250))
                                             },
                                             label = "tabContent"
                                         ) { tab ->
