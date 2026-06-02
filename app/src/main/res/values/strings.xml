@@ -1,0 +1,157 @@
+<resources>
+    <string name="app_name">Idari</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_reports">Reports</string>
+    <string name="nav_budgets">Budgets</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_quick_add">Quick Add</string>
+    <string name="nav_back">Back</string>
+
+    <!-- Biometric Lock -->
+    <string name="biometric_title">Unlock Idari</string>
+    <string name="biometric_subtitle">Authenticate to access your finances</string>
+    <string name="biometric_cancel">Cancel</string>
+    <string name="biometric_tap_auth">Tap to Authenticate</string>
+
+    <!-- Lock Overlay -->
+    <string name="lock_app_name">Idari</string>
+    <string name="lock_subtitle">Your personal finance manager</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Welcome back!</string>
+    <string name="dashboard_idari">Idari</string>
+    <string name="dashboard_weekly_overview">Weekly Overview</string>
+    <string name="dashboard_last_7_days">Last 7 days</string>
+    <string name="dashboard_no_expenses_week">No expenses this week</string>
+    <string name="dashboard_recent_transactions">Recent Transactions</string>
+    <string name="dashboard_empty_hint">Tap (+) to add your first transaction!</string>
+    <string name="dashboard_total_balance">Total Balance</string>
+    <string name="dashboard_income">Income</string>
+    <string name="dashboard_expenses">Expenses</string>
+    <string name="dashboard_delete">Delete</string>
+    <string name="dashboard_edit">Edit</string>
+    <string name="dashboard_spending_breakdown">Spending Breakdown</string>
+
+    <!-- Reports -->
+    <string name="reports_title">Reports &amp; Analytics</string>
+    <string name="reports_subtitle">Visual breakdown of your spending</string>
+    <string name="reports_weekly">Weekly</string>
+    <string name="reports_monthly">Monthly</string>
+    <string name="reports_all">All</string>
+    <string name="reports_empty">No expenses recorded yet</string>
+    <string name="reports_category_spending">Spending by Category</string>
+    <string name="reports_total">Total</string>
+    <string name="reports_category_breakdown">Category Breakdown</string>
+
+    <!-- Budgets -->
+    <string name="budgets_title">Budgets</string>
+    <string name="budgets_subtitle">Set and track spending limits</string>
+    <string name="budgets_empty_title">No budgets yet</string>
+    <string name="budgets_empty_hint">Add categories with limits to track spending</string>
+    <string name="budgets_over">Over!</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Customize your experience</string>
+    <string name="settings_currency">Currency</string>
+    <string name="settings_currency_subtitle">Current: %s</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_subtitle">Current: %s</string>
+    <string name="settings_english">English</string>
+    <string name="settings_arabic">العربية</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_subtitle">Current: %s</string>
+    <string name="settings_theme_ocean">Ocean Blue</string>
+    <string name="settings_theme_emerald">Emerald Green</string>
+    <string name="settings_theme_royal">Royal Purple</string>
+    <string name="settings_biometric">Biometric Lock</string>
+    <string name="settings_biometric_hint">Require fingerprint to open the app</string>
+    <string name="settings_data_management">Data Management</string>
+    <string name="settings_export">Export Data (CSV)</string>
+    <string name="settings_export_subtitle">Save and share your transactions as a spreadsheet</string>
+    <string name="settings_clear">Clear All Data</string>
+    <string name="settings_clear_subtitle">Delete all transactions and budgets permanently</string>
+    <string name="settings_about">About Idari</string>
+    <string name="settings_about_subtitle">Version 1.0 — Personal Expense Manager</string>
+
+    <!-- Dialog titles -->
+    <string name="dialog_choose_currency">Choose Currency</string>
+    <string name="dialog_choose_theme">Choose Theme</string>
+    <string name="dialog_app_language">App Language</string>
+    <string name="dialog_clear_title">Clear All Data?</string>
+    <string name="dialog_clear_body">This will permanently delete all transactions, budgets, and settings. This action cannot be undone.</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_delete_everything">Delete Everything</string>
+    <string name="dialog_delete_transaction_title">Delete Transaction?</string>
+    <string name="dialog_delete_transaction_body">This will permanently delete this transaction. This action cannot be undone.</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_save">Save</string>
+    <string name="dialog_edit_transaction">Edit Transaction</string>
+
+    <!-- Currency labels -->
+    <string name="currency_egp">ج.م (EGP)</string>
+    <string name="currency_usd">USD ($)</string>
+
+    <!-- Quick Add -->
+    <string name="quick_add_title">Quick Add Transaction</string>
+    <string name="quick_add_edit_title">Edit Transaction</string>
+    <string name="quick_add_expense">Expense</string>
+    <string name="quick_add_income">Income</string>
+    <string name="quick_add_select_category">Select Category</string>
+    <string name="quick_add_note_hint">Add a note (e.g. groceries, electricity bill)</string>
+    <string name="quick_add_save">Save Transaction</string>
+    <string name="quick_add_update">Update Transaction</string>
+    <string name="quick_add_delete">Delete</string>
+    <string name="quick_add_numpad_backspace">Delete</string>
+    <string name="quick_add_date">Date</string>
+
+    <!-- Font Selection (kept for backward compatibility, not shown in UI) -->
+    <string name="font_inter">Default</string>
+    <string name="font_cairo">Default</string>
+
+    <!-- Create Category -->
+    <string name="create_category">Create Category</string>
+    <string name="category_name_hint">Category name</string>
+    <string name="category_icon">Icon</string>
+    <string name="create">Create</string>
+    <string name="category_color">Color</string>
+
+    <!-- Snackbar messages -->
+    <string name="snackbar_transaction_saved">Transaction saved successfully</string>
+    <string name="snackbar_transaction_updated">Transaction updated successfully</string>
+    <string name="snackbar_transaction_deleted">Transaction deleted</string>
+    <string name="snackbar_budget_created">Budget created</string>
+    <string name="snackbar_budget_deleted">Budget deleted</string>
+    <string name="snackbar_category_created">Category created</string>
+    <string name="snackbar_data_cleared">All data cleared successfully</string>
+    <string name="snackbar_budget_exceeded">Budget exceeded: %s</string>
+
+    <!-- Export -->
+    <string name="export_chooser_title">Export Transactions</string>
+    <string name="export_share_failed">Share failed: %s</string>
+    <string name="export_failed">Export failed: %s</string>
+
+    <!-- Error messages -->
+    <string name="error_generic">%s</string>
+    <string name="error_add_transaction">Error adding transaction</string>
+    <string name="error_update_transaction">Error updating transaction</string>
+    <string name="error_delete_transaction">Failed to delete transaction</string>
+    <string name="error_delete_budget">Failed to delete budget</string>
+    <string name="error_add_category">Failed to create category</string>
+    <string name="error_clear_failed">Clear failed: %s</string>
+
+    <!-- About -->
+    <string name="about_title">About Idari</string>
+    <string name="about_app_name">Idari</string>
+    <string name="about_version">Version 1.0</string>
+    <string name="about_developer">Developed by</string>
+    <string name="about_developer_name">Mohamed Ali</string>
+    <string name="about_description">A modern personal finance management app that helps you track expenses, manage budgets, and gain insights into your spending habits. Built with Kotlin and Jetpack Compose.</string>
+    <string name="about_contact">Contact</string>
+    <string name="about_email">Email</string>
+    <string name="about_website">Website</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_copyright">© 2026 Idari. All rights reserved.</string>
+</resources>

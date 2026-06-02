@@ -1,0 +1,157 @@
+<resources>
+    <string name="app_name">إداري</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_reports">التقارير</string>
+    <string name="nav_budgets">الميزانيات</string>
+    <string name="nav_settings">الإعدادات</string>
+    <string name="nav_quick_add">إضافة سريعة</string>
+    <string name="nav_back">رجوع</string>
+
+    <!-- Biometric Lock -->
+    <string name="biometric_title">فتح إداري</string>
+    <string name="biometric_subtitle">تحقق من بصمتك للوصول إلى أموالك</string>
+    <string name="biometric_cancel">إلغاء</string>
+    <string name="biometric_tap_auth">اضغط للتحقق</string>
+
+    <!-- Lock Overlay -->
+    <string name="lock_app_name">إداري</string>
+    <string name="lock_subtitle">مدير أموالك الشخصية</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">مرحباً بعودتك!</string>
+    <string name="dashboard_idari">إداري</string>
+    <string name="dashboard_weekly_overview">نظرة أسبوعية</string>
+    <string name="dashboard_last_7_days">آخر 7 أيام</string>
+    <string name="dashboard_no_expenses_week">لا توجد مصروفات هذا الأسبوع</string>
+    <string name="dashboard_recent_transactions">آخر المعاملات</string>
+    <string name="dashboard_empty_hint">! (+) اضغط لإضافة أول معاملة</string>
+    <string name="dashboard_total_balance">الرصيد الكلي</string>
+    <string name="dashboard_income">الدخل</string>
+    <string name="dashboard_expenses">المصروفات</string>
+    <string name="dashboard_delete">حذف</string>
+    <string name="dashboard_edit">تعديل</string>
+    <string name="dashboard_spending_breakdown">توزيع المصروفات</string>
+
+    <!-- Reports -->
+    <string name="reports_title">التقارير والتحليلات</string>
+    <string name="reports_subtitle">تحليل بصري لمصروفاتك</string>
+    <string name="reports_weekly">أسبوعي</string>
+    <string name="reports_monthly">شهري</string>
+    <string name="reports_all">الكل</string>
+    <string name="reports_empty">لم يتم تسجيل مصروفات بعد</string>
+    <string name="reports_category_spending">المصروفات حسب الفئة</string>
+    <string name="reports_total">الإجمالي</string>
+    <string name="reports_category_breakdown">تقسيم الفئات</string>
+
+    <!-- Budgets -->
+    <string name="budgets_title">الميزانيات</string>
+    <string name="budgets_subtitle">حدد وتابع حدود الإنفاق</string>
+    <string name="budgets_empty_title">لا توجد ميزانيات بعد</string>
+    <string name="budgets_empty_hint">أضف فئات بحدود لتتبع الإنفاق</string>
+    <string name="budgets_over">تجاوز!</string>
+
+    <!-- Settings -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_subtitle">خصص تجربتك</string>
+    <string name="settings_currency">العملة</string>
+    <string name="settings_currency_subtitle">الحالية: %s</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_language_subtitle">الحالية: %s</string>
+    <string name="settings_english">English</string>
+    <string name="settings_arabic">العربية</string>
+    <string name="settings_theme">السمة</string>
+    <string name="settings_theme_subtitle">الحالية: %s</string>
+    <string name="settings_theme_ocean">أزرق محيطي</string>
+    <string name="settings_theme_emerald">أخضر زمردي</string>
+    <string name="settings_theme_royal">بنفسجي ملكي</string>
+    <string name="settings_biometric">القفل البصري</string>
+    <string name="settings_biometric_hint">طلب بصمة الإصبع لفتح التطبيق</string>
+    <string name="settings_data_management">إدارة البيانات</string>
+    <string name="settings_export">تصدير البيانات (CSV)</string>
+    <string name="settings_export_subtitle">حفظ ومشاركة معاملاتك كجدول بيانات</string>
+    <string name="settings_clear">مسح جميع البيانات</string>
+    <string name="settings_clear_subtitle">حذف جميع المعاملات والميزانيات نهائياً</string>
+    <string name="settings_about">عن إداري</string>
+    <string name="settings_about_subtitle">الإصدار 1.0 — مدير النفقات الشخصية</string>
+
+    <!-- Dialog titles -->
+    <string name="dialog_choose_currency">اختر العملة</string>
+    <string name="dialog_choose_theme">اختر السمة</string>
+    <string name="dialog_app_language">لغة التطبيق</string>
+    <string name="dialog_clear_title">مسح جميع البيانات؟</string>
+    <string name="dialog_clear_body">سيؤدي هذا إلى حذف جميع المعاملات والميزانيات والإعدادات نهائياً. لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="dialog_cancel">إلغاء</string>
+    <string name="dialog_delete_everything">حذف الكل</string>
+    <string name="dialog_delete_transaction_title">حذف المعاملة؟</string>
+    <string name="dialog_delete_transaction_body">سيؤدي هذا إلى حذف المعاملة نهائياً. لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="dialog_delete">حذف</string>
+    <string name="dialog_save">حفظ</string>
+    <string name="dialog_edit_transaction">تعديل المعاملة</string>
+
+    <!-- Currency labels -->
+    <string name="currency_egp">ج.م (EGP)</string>
+    <string name="currency_usd">USD ($)</string>
+
+    <!-- Quick Add -->
+    <string name="quick_add_title">إضافة معاملة سريعة</string>
+    <string name="quick_add_edit_title">تعديل المعاملة</string>
+    <string name="quick_add_expense">مصروف</string>
+    <string name="quick_add_income">دخل</string>
+    <string name="quick_add_select_category">اختر الفئة</string>
+    <string name="quick_add_note_hint">أضف ملاحظة (مثل: بقالة، فاتورة كهرباء)</string>
+    <string name="quick_add_save">حفظ المعاملة</string>
+    <string name="quick_add_update">تحديث المعاملة</string>
+    <string name="quick_add_delete">حذف</string>
+    <string name="quick_add_numpad_backspace">حذف</string>
+    <string name="quick_add_date">التاريخ</string>
+
+    <!-- Font Selection -->
+    <string name="font_inter">Default</string>
+    <string name="font_cairo">Default</string>
+
+    <!-- Create Category -->
+    <string name="create_category">إنشاء فئة</string>
+    <string name="category_name_hint">اسم الفئة</string>
+    <string name="category_icon">الأيقونة</string>
+    <string name="create">إنشاء</string>
+    <string name="category_color">اللون</string>
+
+    <!-- Snackbar messages -->
+    <string name="snackbar_transaction_saved">تم حفظ المعاملة بنجاح</string>
+    <string name="snackbar_transaction_updated">تم تحديث المعاملة بنجاح</string>
+    <string name="snackbar_transaction_deleted">تم حذف المعاملة</string>
+    <string name="snackbar_budget_created">تم إنشاء الميزانية</string>
+    <string name="snackbar_budget_deleted">تم حذف الميزانية</string>
+    <string name="snackbar_category_created">تم إنشاء الفئة</string>
+    <string name="snackbar_data_cleared">تم مسح جميع البيانات بنجاح</string>
+    <string name="snackbar_budget_exceeded">تم تجاوز الميزانية: %s</string>
+
+    <!-- Export -->
+    <string name="export_chooser_title">تصدير المعاملات</string>
+    <string name="export_share_failed">فشل المشاركة: %s</string>
+    <string name="export_failed">فشل التصدير: %s</string>
+
+    <!-- Error messages -->
+    <string name="error_generic">%s</string>
+    <string name="error_add_transaction">خطأ في إضافة المعاملة</string>
+    <string name="error_update_transaction">خطأ في تحديث المعاملة</string>
+    <string name="error_delete_transaction">فشل حذف المعاملة</string>
+    <string name="error_delete_budget">فشل حذف الميزانية</string>
+    <string name="error_add_category">فشل إنشاء الفئة</string>
+    <string name="error_clear_failed">فشل المسح: %s</string>
+
+    <!-- About -->
+    <string name="about_title">عن إداري</string>
+    <string name="about_app_name">إداري</string>
+    <string name="about_version">الإصدار 1.0</string>
+    <string name="about_developer">طور بواسطة</string>
+    <string name="about_developer_name">محمد علي</string>
+    <string name="about_description">تطبيق حديث لإدارة الأموال الشخصية يساعدك على تتبع المصروفات وإدارة الميزانيات والحصول على رؤى حول عادات الإنفاق الخاصة بك. بُني باستخدام Kotlin و Jetpack Compose.</string>
+    <string name="about_contact">تواصل</string>
+    <string name="about_email">البريد الإلكتروني</string>
+    <string name="about_website">الموقع الإلكتروني</string>
+    <string name="about_github">جيت هاب</string>
+    <string name="about_copyright">© 2026 إداري. جميع الحقوق محفوظة.</string>
+</resources>

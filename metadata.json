@@ -1,0 +1,6 @@
+{
+  "name": "إداري",
+  "description": "تطبيق حديث لإدارة المصاريف والنفقات الشخصية يدعم اللغة العربية بشكل كامل وتخطيط الـ RTL",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
