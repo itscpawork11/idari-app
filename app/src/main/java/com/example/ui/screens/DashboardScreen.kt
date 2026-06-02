@@ -354,6 +354,7 @@ fun DonutBalanceCard(
                 SpendingLegend(data = categorySpending, currency = currency)
             }
         }
+    }
 }
 
 @Composable
