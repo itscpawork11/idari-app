@@ -64,8 +64,6 @@ fun GlassGradientCard(
             .background(
                 Brush.verticalGradient(
                     colors = gradientColors,
-                    startY = 0f,
-                    endY = Float.POSITIVE_INFINITY,
                 )
             )
             .border(
