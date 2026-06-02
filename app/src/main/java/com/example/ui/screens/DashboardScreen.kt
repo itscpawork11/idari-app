@@ -1,10 +1,10 @@
 package com.example.ui.screens
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +17,8 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.TrendingDown
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,7 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -37,11 +41,15 @@ import com.example.data.local.LocaleManager
 import com.example.domain.model.TransactionType
 import com.example.domain.model.TransactionWithCategory
 import com.example.ui.components.getCategoryIcon
+import com.example.ui.theme.GlassGradientCard
 import com.example.ui.viewmodel.ExpenseViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
 
 @Composable
 fun DashboardScreen(
@@ -53,6 +61,8 @@ fun DashboardScreen(
     val transactions by viewModel.allTransactions.collectAsState()
     val currency by viewModel.currency.collectAsState()
     val currentLanguage by viewModel.language.collectAsState()
+    val isBalanceVisible by viewModel.isBalanceVisible.collectAsState()
+    val isTransactionsVisible by viewModel.isTransactionsVisible.collectAsState()
 
     val totalIncome = remember(transactions) { transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount } }
     val totalExpense = remember(transactions) { transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount } }
@@ -78,7 +88,6 @@ fun DashboardScreen(
                 spending.add(ExpenseViewModel.CategorySpending(otherName, otherAmount, "#9E9E9E", (otherAmount / total * 100).toFloat()))
             }
         }
-        spending.sortedByDescending { it.amount }
     }
 
     var showDeleteDialog by remember { mutableStateOf<Long?>(null) }
@@ -104,11 +113,14 @@ fun DashboardScreen(
         )
     }
 
-    LazyColumn(
-        modifier = modifier.fillMaxSize().testTag("dashboard_screen").padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedGeometricBackground()
+
+        LazyColumn(
+            modifier = modifier.fillMaxSize().testTag("dashboard_screen").padding(horizontal = 16.dp),
+            contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         item {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -137,7 +149,9 @@ fun DashboardScreen(
                 income = totalIncome,
                 expense = totalExpense,
                 currency = currency,
-                categorySpending = categorySpending
+                categorySpending = categorySpending,
+                isVisible = isBalanceVisible,
+                onToggleVisibility = { viewModel.toggleBalanceVisibility() }
             )
         }
 
@@ -181,7 +195,21 @@ fun DashboardScreen(
         }
 
         item {
-            Text(stringResource(R.string.dashboard_recent_transactions), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(stringResource(R.string.dashboard_recent_transactions), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                IconButton(onClick = { viewModel.toggleTransactionsVisibility() }) {
+                    Icon(
+                        imageVector = if (isTransactionsVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
         }
 
         val recentList = transactions.take(20)
@@ -205,11 +233,14 @@ fun DashboardScreen(
                     transaction = item,
                     currency = currency,
                     currentLanguage = currentLanguage,
+                    isVisible = isTransactionsVisible,
                     onEdit = { onEditTransaction(item) },
                     onDelete = { showDeleteDialog = item.id }
                 )
             }
         }
+    }
+
     }
 }
 
@@ -219,33 +250,46 @@ fun DonutBalanceCard(
     income: Double,
     expense: Double,
     currency: String,
-    categorySpending: List<ExpenseViewModel.CategorySpending>
+    categorySpending: List<ExpenseViewModel.CategorySpending>,
+    isVisible: Boolean = false,
+    onToggleVisibility: () -> Unit = {}
 ) {
     val totalExpense = categorySpending.sumOf { it.amount }
 
-    Card(
+    GlassGradientCard(
+        gradientColors = listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.primary.copy(blue = MaterialTheme.colorScheme.primary.blue * 0.85f, alpha = 0.95f),
+        ),
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(32.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.dashboard_total_balance),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.75f),
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        IconButton(
+                            onClick = onToggleVisibility,
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.75f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                     Text(
-                        text = stringResource(R.string.dashboard_total_balance),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.75f),
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        text = "%.2f %s".format(Locale.US, balance, currency),
+                        text = if (isVisible) "%.2f %s".format(Locale.US, balance, currency) else "•••••",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Black,
                         color = MaterialTheme.colorScheme.onPrimary
@@ -274,7 +318,12 @@ fun DonutBalanceCard(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(stringResource(R.string.dashboard_income), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f))
-                        Text("%.1f %s".format(Locale.US, income, currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Color(0xFF4CAF50))
+                        Text(
+                            text = if (isVisible) "%.1f %s".format(Locale.US, income, currency) else "•••••",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF4CAF50)
+                        )
                     }
                 }
                 Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
@@ -284,8 +333,12 @@ fun DonutBalanceCard(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(stringResource(R.string.dashboard_expenses), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f))
-                        Text("%.1f %s".format(Locale.US, expense, currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Color(0xFFE53935))
-                    }
+                        Text(
+                            text = if (isVisible) "%.1f %s".format(Locale.US, expense, currency) else "•••••",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFE53935)
+                        )
                 }
             }
 
@@ -392,6 +445,7 @@ fun TransactionListItem(
     transaction: TransactionWithCategory,
     currency: String,
     currentLanguage: String = "en",
+    isVisible: Boolean = true,
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {}
 ) {
@@ -436,7 +490,7 @@ fun TransactionListItem(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 val isIncome = transaction.type == TransactionType.INCOME
                 Text(
-                    text = "%s%.1f %s".format(Locale.US, if (isIncome) "+" else "-", transaction.amount, currency),
+                    text = if (isVisible) "%s%.1f %s".format(Locale.US, if (isIncome) "+" else "-", transaction.amount, currency) else "•••••",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (isIncome) Color(0xFF4CAF50) else Color(0xFFE53935)
@@ -509,3 +563,100 @@ private fun calculateLast7DaysSpending(transactions: List<TransactionWithCategor
     }
     return list
 }
+
+@Composable
+fun AnimatedGeometricBackground() {
+    val infiniteTransition = rememberInfiniteTransition(label = "geo")
+    val shapeCount = 6
+    val primary = MaterialTheme.colorScheme.primary
+    val secondary = MaterialTheme.colorScheme.secondary
+    val tertiary = MaterialTheme.colorScheme.tertiary
+
+    val shapeData = remember {
+        List(shapeCount) { i ->
+            GeometricShape(
+                centerX = Random.nextFloat(),
+                centerY = Random.nextFloat(),
+                size = Random.nextFloat() * 60f + 20f,
+                speed = Random.nextFloat() * 0.5f + 0.3f,
+                rotation = Random.nextFloat() * 360f,
+                alpha = Random.nextFloat() * 0.08f + 0.03f,
+                type = i % 3,
+                colorSeed = i
+            )
+        }
+    }
+
+    val animProgress = infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(8000, easing = LinearEasing), RepeatMode.Restart),
+        label = "progress"
+    )
+
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val w = size.width
+        val h = size.height
+
+        shapeData.forEach { shape ->
+            val phase = animProgress.value * shape.speed
+            val x = ((shape.centerX + phase * 0.3f) % 1.2f - 0.1f) * w
+            val y = ((shape.centerY + phase * 0.2f + sin(phase * 2f) * 0.05f) % 1.2f - 0.1f) * h
+            val rot = shape.rotation + phase * 30f
+            val s = shape.size * density
+
+            val color = when (shape.colorSeed % 3) {
+                0 -> primary.copy(alpha = shape.alpha)
+                1 -> secondary.copy(alpha = shape.alpha)
+                else -> tertiary.copy(alpha = shape.alpha)
+            }
+
+            translate(x, y) {
+                rotate(rot, Offset(s / 2f, s / 2f)) {
+                    when (shape.type) {
+                        0 -> {
+                            drawCircle(color = color, radius = s / 2f)
+                        }
+                        1 -> {
+                            val path = Path().apply {
+                                moveTo(s / 2f, 0f)
+                                lineTo(s, s * 0.67f)
+                                lineTo(s * 0.67f, s)
+                                lineTo(s * 0.33f, s)
+                                lineTo(0f, s * 0.67f)
+                                close()
+                            }
+                            drawPath(path, color = color)
+                        }
+                        else -> {
+                            val path = Path().apply {
+                                val cx = s / 2f
+                                val cy = s / 2f
+                                val r = s / 2f
+                                for (i in 0 until 6) {
+                                    val angle = Math.toRadians((i * 60f).toDouble())
+                                    val px = cx + r * cos(angle).toFloat()
+                                    val py = cy + r * sin(angle).toFloat()
+                                    if (i == 0) moveTo(px, py) else lineTo(px, py)
+                                }
+                                close()
+                            }
+                            drawPath(path, color = color)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private data class GeometricShape(
+    val centerX: Float,
+    val centerY: Float,
+    val size: Float,
+    val speed: Float,
+    val rotation: Float,
+    val alpha: Float,
+    val type: Int,
+    val colorSeed: Int
+)

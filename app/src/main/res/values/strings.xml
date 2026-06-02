@@ -73,6 +73,10 @@
     <string name="settings_export_subtitle">Save and share your transactions as a spreadsheet</string>
     <string name="settings_clear">Clear All Data</string>
     <string name="settings_clear_subtitle">Delete all transactions and budgets permanently</string>
+    <string name="settings_backup">Backup Data (JSON)</string>
+    <string name="settings_backup_subtitle">Save a complete backup of your data</string>
+    <string name="settings_restore">Restore Backup</string>
+    <string name="settings_restore_subtitle">Restore data from a JSON backup file</string>
     <string name="settings_about">About Idari</string>
     <string name="settings_about_subtitle">Version 1.0 — Personal Expense Manager</string>
 
@@ -147,11 +151,19 @@
     <string name="about_app_name">Idari</string>
     <string name="about_version">Version 1.0</string>
     <string name="about_developer">Developed by</string>
-    <string name="about_developer_name">Mohamed Ali</string>
+    <string name="about_developer_name">Ahmed Hamed</string>
     <string name="about_description">A modern personal finance management app that helps you track expenses, manage budgets, and gain insights into your spending habits. Built with Kotlin and Jetpack Compose.</string>
     <string name="about_contact">Contact</string>
     <string name="about_email">Email</string>
     <string name="about_website">Website</string>
     <string name="about_github">GitHub</string>
+    <string name="about_whatsapp">WhatsApp</string>
+    <string name="about_instagram">Instagram</string>
+    <string name="about_facebook">Facebook</string>
+    <string name="dialog_restore_title">Restore Backup?</string>
+    <string name="dialog_restore_body">This will replace all current data with the backup data. This action cannot be undone.</string>
+    <string name="snackbar_backup_created">Backup created successfully</string>
+    <string name="snackbar_restore_success">Data restored successfully</string>
+    <string name="error_restore_failed">Failed to restore backup: %s</string>
     <string name="about_copyright">© 2026 Idari. All rights reserved.</string>
 </resources>

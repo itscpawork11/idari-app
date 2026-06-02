@@ -13,10 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.outlined.Code
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -222,18 +222,18 @@ fun AboutScreen(
                     Spacer(modifier = Modifier.height(4.dp))
 
                     ContactRow(
-                        icon = Icons.Outlined.Email,
-                        text = "contact@idari.app",
+                        icon = Icons.Default.Chat,
+                        text = "+201097238145",
                         onClick = {}
                     )
                     ContactRow(
-                        icon = Icons.Outlined.Language,
-                        text = "www.idari.app",
+                        icon = Icons.Default.CameraAlt,
+                        text = "ahmoodiy",
                         onClick = {}
                     )
                     ContactRow(
-                        icon = Icons.Outlined.Code,
-                        text = "github.com/idari",
+                        icon = Icons.Default.ThumbUp,
+                        text = "facebook.com/Mesh.Ahmed.Hamed",
                         onClick = {}
                     )
                 }

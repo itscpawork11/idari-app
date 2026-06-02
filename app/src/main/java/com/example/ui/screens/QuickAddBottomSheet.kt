@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.R
+import com.example.data.local.LocaleManager
 import com.example.domain.model.Category
 import com.example.domain.model.TransactionType
 import com.example.domain.model.TransactionWithCategory
@@ -58,6 +59,7 @@ private val colorOptions = listOf(
 @Composable
 fun QuickAddBottomSheet(
     categories: List<Category>,
+    currentLanguage: String = "en",
     onAddTransaction: (Double, TransactionType, Int, String?) -> Unit = { _, _, _, _ -> },
     onUpdateTransaction: (Long, Double, TransactionType, Int, Long, String?) -> Unit = { _, _, _, _, _, _ -> },
     onDeleteTransaction: (Long) -> Unit = {},
@@ -260,6 +262,11 @@ fun QuickAddBottomSheet(
                         }
                     }
 
+                    val displayName = remember(category.iconRes, currentLanguage) {
+                        val localized = LocaleManager.getDefaultCategoryName(category.iconRes, currentLanguage)
+                        if (localized == category.iconRes) category.name else localized
+                    }
+
                     FilterChip(
                         selected = isSelected,
                         onClick = {
@@ -267,7 +274,7 @@ fun QuickAddBottomSheet(
                             selectedCategory = category
                         },
                         label = {
-                            Text(text = category.name, fontWeight = FontWeight.Bold)
+                            Text(text = displayName, fontWeight = FontWeight.Bold)
                         },
                         leadingIcon = {
                             Icon(

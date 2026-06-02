@@ -39,6 +39,8 @@ fun SettingsScreen(
     onBackClick: () -> Unit = {},
     onRestart: () -> Unit = {},
     onNavigateToAbout: () -> Unit = {},
+    onRestoreBackup: () -> Unit = {},
+    onExportBackup: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -167,6 +169,22 @@ fun SettingsScreen(
                                 viewModel.exportToCsv(context)
                             }
                         }
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
+                    SettingsRowItem(
+                        icon = Icons.Default.Share,
+                        iconTint = Color(0xFF2196F3),
+                        title = stringResource(R.string.settings_backup),
+                        subtitle = stringResource(R.string.settings_backup_subtitle),
+                        onClick = { onExportBackup() }
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
+                    SettingsRowItem(
+                        icon = Icons.Default.Share,
+                        iconTint = Color(0xFFFF9800),
+                        title = stringResource(R.string.settings_restore),
+                        subtitle = stringResource(R.string.settings_restore_subtitle),
+                        onClick = { onRestoreBackup() }
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsRowItem(

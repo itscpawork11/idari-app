@@ -1,7 +1,14 @@
 package com.example.ui.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+
+val GlassCardShape = RoundedCornerShape(24.dp)
+val GlassCardElevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
 
 @Composable
 fun MyApplicationTheme(

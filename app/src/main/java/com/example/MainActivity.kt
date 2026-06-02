@@ -4,10 +4,12 @@ package com.example
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -56,6 +58,10 @@ import kotlinx.coroutines.launch
 class MainActivity : FragmentActivity() {
 
     private var pendingBiometricAction: String? = null
+
+    private val restoreBackupLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+        uri?.let { viewModel.restoreBackup(this, it) }
+    }
 
     override fun attachBaseContext(newBase: Context?) {
         val prefs = newBase?.getSharedPreferences("idari_prefs", Context.MODE_PRIVATE)
@@ -145,6 +151,22 @@ class MainActivity : FragmentActivity() {
                                 is ExpenseViewModel.ExpenseEvent.BudgetExceededWarning -> {
                                     scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_budget_exceeded, event.categoryName), duration = SnackbarDuration.Long) }
                                 }
+                                is ExpenseViewModel.ExpenseEvent.BackupSuccess -> {
+                                    try {
+                                        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", event.file)
+                                        val intent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "application/json"
+                                            putExtra(Intent.EXTRA_STREAM, uri)
+                                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                        }
+                                        context.startActivity(Intent.createChooser(intent, context.getString(R.string.export_chooser_title)))
+                                    } catch (e: Exception) {
+                                        Toast.makeText(context, context.getString(R.string.export_share_failed, e.localizedMessage), Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                is ExpenseViewModel.ExpenseEvent.RestoreSuccess -> {
+                                    scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_restore_success), duration = SnackbarDuration.Short) }
+                                }
                                 is ExpenseViewModel.ExpenseEvent.ExportSuccess -> {
                                     try {
                                         val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", event.file)
@@ -204,7 +226,8 @@ class MainActivity : FragmentActivity() {
                                     targetState = isUnlocked,
                                     transitionSpec = {
                                         fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(400))
-                                    }
+                                    },
+                                    label = "lockContent"
                                 ) { unlocked ->
                                     if (!unlocked) {
                                         BiometricLockedOverlay(onAuthenticateClick = { showBiometricPrompt() })
@@ -212,14 +235,28 @@ class MainActivity : FragmentActivity() {
                                         AnimatedContent(
                                             targetState = currentTab,
                                             transitionSpec = {
-                                                fadeIn(animationSpec = tween(350)) togetherWith fadeOut(animationSpec = tween(200))
-                                            }
+                                                val direction = if (targetState > initialState) 1 else -1
+                                                val offset = 30.dp * direction
+                                                slideInHorizontally(animationSpec = tween(350)) { offset } + fadeIn(animationSpec = tween(350)) togetherWith
+                                                slideOutHorizontally(animationSpec = tween(250)) { -offset } + fadeOut(animationSpec = tween(250))
+                                            },
+                                            label = "tabContent"
                                         ) { tab ->
                                             when (tab) {
                                                  0 -> DashboardScreen(viewModel = viewModel, onNavigateToQuickAdd = { showQuickAddSheet = true }, onEditTransaction = { t -> editingTransaction = t }, modifier = Modifier.padding(innerPadding))
                                                  1 -> ReportsScreen(viewModel = viewModel, modifier = Modifier.padding(innerPadding))
                                                  2 -> BudgetsScreen(viewModel = viewModel, modifier = Modifier.padding(innerPadding))
-                                                 3 -> SettingsScreen(viewModel = viewModel, onBackClick = { currentTab = 0 }, onRestart = { recreate() }, onNavigateToAbout = { showAboutScreen = true }, modifier = Modifier.padding(innerPadding))
+                                                 3 -> SettingsScreen(
+                                                     viewModel = viewModel,
+                                                     onBackClick = { currentTab = 0 },
+                                                     onRestart = { recreate() },
+                                                     onNavigateToAbout = { showAboutScreen = true },
+                                                     onRestoreBackup = { restoreBackupLauncher.launch(arrayOf("application/json")) },
+                                                     onExportBackup = {
+                                                         viewModel.exportBackup(this@MainActivity)
+                                                     },
+                                                     modifier = Modifier.padding(innerPadding)
+                                                 )
                                             }
                                         }
                                     }
@@ -232,6 +269,7 @@ class MainActivity : FragmentActivity() {
                                     ) {
                                         QuickAddBottomSheet(
                                             categories = categories,
+                                            currentLanguage = currentLanguage,
                                             onAddTransaction = { amount, type, catId, note ->
                                                 viewModel.addTransaction(amount, type, catId, note)
                                             },
@@ -250,6 +288,7 @@ class MainActivity : FragmentActivity() {
                                     ) {
                                         QuickAddBottomSheet(
                                             categories = categories,
+                                            currentLanguage = currentLanguage,
                                             editTransaction = transaction,
                                             onUpdateTransaction = { id, amount, type, catId, timestamp, note ->
                                                 viewModel.updateTransaction(id, amount, type, catId, timestamp, note)

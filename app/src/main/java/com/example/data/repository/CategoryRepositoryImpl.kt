@@ -28,14 +28,14 @@ class CategoryRepositoryImpl(
 
     override suspend fun seedDefaultCategories() {
         val defaults = listOf(
-            CategoryEntity(name = "income", iconRes = "income", colorHex = "#2ECC71"),
-            CategoryEntity(name = "food", iconRes = "food", colorHex = "#E67E22"),
-            CategoryEntity(name = "transport", iconRes = "transport", colorHex = "#3498DB"),
-            CategoryEntity(name = "home", iconRes = "home", colorHex = "#E74C3C"),
-            CategoryEntity(name = "shopping", iconRes = "shopping", colorHex = "#9B59B6"),
-            CategoryEntity(name = "education", iconRes = "education", colorHex = "#1ABC9C"),
-            CategoryEntity(name = "entertainment", iconRes = "entertainment", colorHex = "#F1C40F"),
-            CategoryEntity(name = "other", iconRes = "other", colorHex = "#95A5A6")
+            CategoryEntity(name = "Salary & Income", iconRes = "income", colorHex = "#2ECC71"),
+            CategoryEntity(name = "Food & Groceries", iconRes = "food", colorHex = "#E67E22"),
+            CategoryEntity(name = "Transportation", iconRes = "transport", colorHex = "#3498DB"),
+            CategoryEntity(name = "Rent & Bills", iconRes = "home", colorHex = "#E74C3C"),
+            CategoryEntity(name = "Shopping", iconRes = "shopping", colorHex = "#9B59B6"),
+            CategoryEntity(name = "Health & Education", iconRes = "education", colorHex = "#1ABC9C"),
+            CategoryEntity(name = "Entertainment", iconRes = "entertainment", colorHex = "#F1C40F"),
+            CategoryEntity(name = "Other Expenses", iconRes = "other", colorHex = "#95A5A6")
         )
         categoryDao.insertCategories(defaults)
     }

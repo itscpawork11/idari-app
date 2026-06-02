@@ -5,10 +5,26 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 
 fun getFontFamily(isRtl: Boolean = false): FontFamily {
-    return FontFamily.Default
+    return if (isRtl) {
+        val provider = GoogleFont.Provider(
+            authority = "com.google.android.gms.fonts",
+            packageName = "com.google.android.gms",
+            certificates = emptyList()
+        )
+        FontFamily(
+            Font(googleFont = GoogleFont("Cairo"), fontProvider = provider, weight = FontWeight.Normal),
+            Font(googleFont = GoogleFont("Cairo"), fontProvider = provider, weight = FontWeight.Medium),
+            Font(googleFont = GoogleFont("Cairo"), fontProvider = provider, weight = FontWeight.SemiBold),
+            Font(googleFont = GoogleFont("Cairo"), fontProvider = provider, weight = FontWeight.Bold),
+            Font(googleFont = GoogleFont("Cairo"), fontProvider = provider, weight = FontWeight.Black),
+        )
+    } else {
+        FontFamily.Default
+    }
 }
 
 fun buildTypography(fontFamily: FontFamily): Typography {

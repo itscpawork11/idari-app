@@ -1,6 +1,7 @@
 package com.example.ui.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -60,6 +61,12 @@ class ExpenseViewModel(
     private val _isUnlocked = MutableStateFlow(true)
     val isUnlocked: StateFlow<Boolean> = _isUnlocked.asStateFlow()
 
+    private val _isBalanceVisible = MutableStateFlow(false)
+    val isBalanceVisible: StateFlow<Boolean> = _isBalanceVisible.asStateFlow()
+
+    private val _isTransactionsVisible = MutableStateFlow(false)
+    val isTransactionsVisible: StateFlow<Boolean> = _isTransactionsVisible.asStateFlow()
+
     private val _themeIndex = MutableStateFlow(0)
     val themeIndex: StateFlow<Int> = _themeIndex.asStateFlow()
 
@@ -117,6 +124,18 @@ class ExpenseViewModel(
 
     fun setLockState(locked: Boolean) {
         _isUnlocked.value = !locked
+        if (locked) {
+            _isBalanceVisible.value = false
+            _isTransactionsVisible.value = false
+        }
+    }
+
+    fun toggleBalanceVisibility() {
+        _isBalanceVisible.value = !_isBalanceVisible.value
+    }
+
+    fun toggleTransactionsVisibility() {
+        _isTransactionsVisible.value = !_isTransactionsVisible.value
     }
 
     fun setCurrency(newCurrency: String) {
@@ -282,6 +301,112 @@ class ExpenseViewModel(
         }
     }
 
+    fun exportBackup(context: Context) {
+        viewModelScope.launch {
+            try {
+                val json = org.json.JSONObject().apply {
+                    put("version", 1)
+                    put("categories", org.json.JSONArray(categories.value.map { cat ->
+                        org.json.JSONObject().apply {
+                            put("id", cat.id)
+                            put("name", cat.name)
+                            put("iconRes", cat.iconRes)
+                            put("colorHex", cat.colorHex)
+                        }
+                    }))
+                    put("transactions", org.json.JSONArray(allTransactions.value.map { t ->
+                        org.json.JSONObject().apply {
+                            put("amount", t.amount)
+                            put("type", t.type.name)
+                            put("categoryId", t.categoryId)
+                            put("timestamp", t.timestamp)
+                            put("note", t.note ?: "")
+                        }
+                    }))
+                    put("budgets", org.json.JSONArray(budgets.value.map { b ->
+                        org.json.JSONObject().apply {
+                            put("id", b.id)
+                            put("categoryId", b.categoryId ?: org.json.JSONObject.NULL)
+                            put("limitAmount", b.limitAmount)
+                            put("spentAmount", b.spentAmount)
+                            put("startDate", b.startDate)
+                            put("endDate", b.endDate)
+                        }
+                    }))
+                }
+
+                val sdf = SimpleDateFormat("yyyy_MM_dd_HH_mm", Locale.US)
+                val fileName = "idari_backup_${sdf.format(Date())}.json"
+                val cachePath = File(context.cacheDir, "backups")
+                cachePath.mkdirs()
+                val file = File(cachePath, fileName)
+                file.writeText(json.toString(2))
+
+                _eventFlow.emit(ExpenseEvent.BackupSuccess(file))
+            } catch (e: Exception) {
+                _eventFlow.emit(ExpenseEvent.Error(R.string.error_restore_failed, e.localizedMessage))
+            }
+        }
+    }
+
+    fun restoreBackup(context: Context, uri: Uri) {
+        viewModelScope.launch {
+            try {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val jsonStr = inputStream?.bufferedReader()?.readText() ?: throw Exception("Empty file")
+                val root = org.json.JSONObject(jsonStr)
+                val categoriesArray = root.getJSONArray("categories")
+                val transactionsArray = root.getJSONArray("transactions")
+                val budgetsArray = root.getJSONArray("budgets")
+
+                transactionRepository.clearAllTransactions()
+
+                for (i in 0 until budgetsArray.length()) {
+                    val b = budgetsArray.getJSONObject(i)
+                    val catId = if (b.isNull("categoryId")) null else b.getInt("categoryId")
+                    val budget = com.example.domain.model.Budget(
+                        id = b.getInt("id"),
+                        categoryId = catId,
+                        limitAmount = b.getDouble("limitAmount"),
+                        spentAmount = b.getDouble("spentAmount"),
+                        startDate = b.getLong("startDate"),
+                        endDate = b.getLong("endDate")
+                    )
+                    budgetRepository.saveBudget(budget)
+                }
+
+                for (i in 0 until categoriesArray.length()) {
+                    val c = categoriesArray.getJSONObject(i)
+                    val category = com.example.domain.model.Category(
+                        id = c.getInt("id"),
+                        name = c.getString("name"),
+                        iconRes = c.getString("iconRes"),
+                        colorHex = c.getString("colorHex")
+                    )
+                    categoryRepository.addCategory(category)
+                }
+
+                for (i in 0 until transactionsArray.length()) {
+                    val t = transactionsArray.getJSONObject(i)
+                    val type = try { TransactionType.valueOf(t.getString("type")) } catch (e: Exception) { TransactionType.EXPENSE }
+                    val transaction = Transaction(
+                        amount = t.getDouble("amount"),
+                        type = type,
+                        categoryId = t.getInt("categoryId"),
+                        timestamp = t.getLong("timestamp"),
+                        note = t.optString("note", null)
+                    )
+                    transactionRepository.insertTransaction(transaction)
+                }
+
+                budgetRepository.recalculateBudgetsSpent()
+                _eventFlow.emit(ExpenseEvent.RestoreSuccess)
+            } catch (e: Exception) {
+                _eventFlow.emit(ExpenseEvent.Error(R.string.error_restore_failed, e.localizedMessage))
+            }
+        }
+    }
+
     fun requestBiometricForExport() {
         viewModelScope.launch {
             _eventFlow.emit(ExpenseEvent.RequestBiometricForExport)
@@ -318,10 +443,14 @@ class ExpenseViewModel(
         object CategoryCreatedSuccessfully : ExpenseEvent()
         data class BudgetExceededWarning(val categoryName: String) : ExpenseEvent()
         data class ExportSuccess(val file: File) : ExpenseEvent()
+        data class BackupSuccess(val file: File) : ExpenseEvent()
+        object RestoreSuccess : ExpenseEvent()
         data class Error(val messageResId: Int, val formatArg: String? = null) : ExpenseEvent()
         object RequestBiometricForExport : ExpenseEvent()
         object RequestBiometricForClear : ExpenseEvent()
     }
+
+
 
     class Factory(
         private val categoryRepository: CategoryRepository,
