@@ -45,7 +45,19 @@ jobs:
         run: base64 -d debug.keystore.base64 > debug.keystore
 
       - name: Build APK (Release)
-        run: ./gradlew assembleRelease --no-daemon
+        run: |
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee build.log
+          if [ ${PIPESTATUS[0]} -ne 0 ]; then
+            echo "BUILD_FAILED=true" >> $GITHUB_ENV
+            exit ${PIPESTATUS[0]}
+          fi
+
+      - name: Upload build log (on failure)
+        if: env.BUILD_FAILED == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
